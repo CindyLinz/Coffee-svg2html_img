@@ -129,6 +129,7 @@ svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
   - array\_of\_ids:
 
     Each element of **array\_of\_ids** is a string of the id value of an SVG element.
+    If you use empty string as the id value, then this one will pick the whole SVG.
 
   - array\_of\_images\_and\_bboxes:
 
