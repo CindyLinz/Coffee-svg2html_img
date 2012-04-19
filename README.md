@@ -118,7 +118,11 @@ Detailed API
 + svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
 
   The difference with the first form are the **array\_of\_ids** and the parameter for the **callback**.
-  This form of the method will generate image object for each id.
+  This form of the method will generates image object for each id.
+  Not only the SVG node (and subtree) itself, but also its ancestor nodes and
+  all the elements referenced by this subtree and their ancestor 
+  and all the elements referenced by this forest and over and over again.
+  So the visual effects should be preserved identical as they locates in the original SVG.
 
   - array\_of\_ids:
 
