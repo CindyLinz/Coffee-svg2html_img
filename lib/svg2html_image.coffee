@@ -125,6 +125,7 @@ node2text = (node) ->
     return out
 
 build_image = (svg) ->
+    return unless svg?
     doc = window.document
     doc.getElementsByTagName('body')[0].appendChild(svg)
     #log svg.getBBox()
@@ -156,13 +157,14 @@ build_image = (svg) ->
 build_images = (svg, id_list, cb) ->
 
     build_id2node = (node, id2node) ->
-        return id2node if node.nodeName.charAt(0) == '#'
+        return id2node if node.nodeType==3 || node.nodeType==4
 
-        id = node.getAttribute('id')
-        if id?
-            if id2node[id]?
-                log "duplicated id: #{id}"
-            id2node[id] = node
+        if node.nodeType==1
+            id = node.getAttribute('id')
+            if id?
+                if id2node[id]?
+                    log "duplicated id: #{id}"
+                id2node[id] = node
 
         build_id2node(child, id2node) for child in node.childNodes
 
@@ -248,20 +250,29 @@ build_images = (svg, id_list, cb) ->
         id_list = ['']
         true
 
+    done_one = () ->
+        --waiting
+        if waiting<=0
+            window.setTimeout( () ->
+                if form1
+                    if imgs[0]?
+                        cb(imgs[0]...)
+                    else
+                        cb(null, null)
+                else
+                    cb(imgs)
+            , 0)
+
     waiting = id_list.length
     imgs =
     for id in id_list
-        [img, bbox] = build_image extract_svg id
-        img.onload = () ->
-            --waiting
-            if waiting<=0
-                window.setTimeout( () ->
-                    if form1
-                        cb(imgs[0]..)
-                    else
-                        cb(imgs)
-                , 0)
-        [img, bbox]
+        img_and_bbox = build_image extract_svg id
+        if img_and_bbox?
+            [img, bbox] = img_and_bbox
+            img.onload = done_one
+        else
+            done_one()
+        img_and_bbox
 
 window.svg2html_image = (svg, id_list, cb) ->
     unless cb?
