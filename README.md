@@ -82,7 +82,8 @@ You can either:
 Detailed API
 ============
 
-+ svg2html\_image(svg, callback(image, bbox))
+svg2html\_image(svg, callback(image, bbox))
+-------------------------------------------
 
   Transform the whole SVG file into an HTML Image object with its bounding box.
   If the SVG file specified its dimension, the generated HTML Image will be the same
@@ -115,7 +116,8 @@ Detailed API
     the **image** is the Image object, and the **bbox** is an SVGRect object
     that point out the bounding box of the content elements.
 
-+ svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
+svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
+------------------------------------------------------------------------------
 
   The difference with the first form are the **array\_of\_ids** and the parameter for the **callback**.
   This form of the method will generates image object for each id.
