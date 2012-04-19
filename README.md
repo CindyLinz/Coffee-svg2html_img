@@ -20,7 +20,7 @@ put these SVGs into the canvas later.
 Usage
 =====
 
-You can take a look on demo here [](http://cindylinz.github.com/Coffee-svg2html\_img/).
+You can take a look on demo [here](http://cindylinz.github.com/Coffee-svg2html\_img/).
 
 There's only one exported method **svg2html_image** with two form.
 
