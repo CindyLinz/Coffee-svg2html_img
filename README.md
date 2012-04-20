@@ -63,8 +63,10 @@ There's only one exported method **svg2html_image** with two form.
 Install
 =======
 
-This library is written in [CoffeeScript][].
+This library is written in [CoffeeScript][], and you can use it with or without [RequireJS][]
 You can either:
+
++ If you are working with [RequireJS][], you can require this module by [cs][] plugin.
 
 + Compile the file svg2html\_image.coffee in lib/ into javascript file
   directly.
@@ -79,7 +81,9 @@ You can either:
 
   Notice that you should use the type **text/coffeescript** for the .coffee file.
 
+[cs]: https://github.com/jrburke/require-cs
 [CoffeeScript]: http://coffeescript.org/
+[RequireJS]: http://requirejs.org/
 
 Detailed API
 ============

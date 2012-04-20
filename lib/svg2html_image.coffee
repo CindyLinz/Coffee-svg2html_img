@@ -274,7 +274,7 @@ build_images = (svg, id_list, cb) ->
             done_one()
         img_and_bbox
 
-window.svg2html_image = (svg, id_list, cb) ->
+svg2html_image = (svg, id_list, cb) ->
     unless cb?
         cb = id_list
         id_list = undefined
@@ -317,3 +317,8 @@ window.svg2html_image = (svg, id_list, cb) ->
                     out = ( null for x in id_list )
                     cb(out)
             )
+
+if window.require? and window.define?
+    define([], () -> svg2html_image)
+else
+    window.svg2html_image = svg2html_image
