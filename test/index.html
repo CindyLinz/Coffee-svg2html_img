@@ -1,0 +1,84 @@
+<!Doctype html>
+<html>
+    <head>
+        <title>SVG To HTML Image Demo</title>
+
+        <!-- <script type="text/javascript" data-main="main" src="http://requirejs.org/docs/release/1.0.7/minified/require.js"></script> -->
+        <!--
+            Uncomment out the above line and comment out the two lines below
+            if you want to test the scenario with RequireJS.
+            And remember to download the RequireJS's cs plugin to the same directory.
+        -->
+        <script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
+
+        <script type="text/coffeescript" src="../lib/svg2html_image.coffee"></script>
+
+        <script type="text/javascript">
+            window.try_start = function(){
+                if( !window.svg2html_image ){
+                    if( !window.require || !window.define )
+                        window.setTimeout(window.try_start, 100);
+                    return;
+                }
+
+                document.getElementById('render').onclick = function(){
+                    var svg = document.getElementById('svg').value;
+                    var array_of_ids = document.getElementById('array_of_ids').value.
+                        replace(/[\s,]+/g, ' ').
+                        replace(/^\s+|\s+$/g, '').
+                        split(' ');
+                    var canvas = document.getElementById('canvas');
+                    if( array_of_ids && array_of_ids.length )
+                        svg2html_image(svg, array_of_ids, function(array_of_images_and_bboxes){
+                            var x=0, y=0, h=0, w=1000;
+                            var i;
+                            canvas.width = canvas.width;
+                            var ctx = canvas.getContext('2d');//.drawImage(image, -bbox.x, -bbox.y);
+                            var image, bbox;
+                            for(i=0; i<array_of_images_and_bboxes.length; ++i){
+                                if( !array_of_images_and_bboxes[i] )
+                                    continue;
+                                image = array_of_images_and_bboxes[i][0];
+                                bbox = array_of_images_and_bboxes[i][1];
+                                if( x > 0 && x + bbox.width - bbox.x > 1000 ){
+                                    x = 0;
+                                    y = h;
+                                }
+                                ctx.drawImage(image, x-bbox.x, y-bbox.y);
+                                x += bbox.width;
+                                if( y + bbox.height > h )
+                                    h = y + bbox.height;
+                            }
+                        });
+                    else
+                        svg2html_image(svg, function(image, bbox){
+                            canvas.width = canvas.width;
+                            if( image )
+                                canvas.getContext('2d').drawImage(image, -bbox.x, -bbox.y);
+                        });
+                };
+                document.getElementById('render').focus();
+            };
+
+            window.onload = window.try_start;
+        </script>
+    </head>
+    <body>
+        <h2 align=center>SVG To HTML Image Demo</h2>
+        SVG:<br>
+        <textarea id=svg style=width:90%;height:100px>
+            <svg width="760" height="760" xmlns="http://www.w3.org/2000/svg">
+               <radialGradient id="radial" cx="50%" cy="50%" fx="25%" fy="25%">
+                 <stop offset="0%" stop-color="#60bafc"></stop>
+                 <stop offset="50%" stop-color="#409adc"></stop>
+                 <stop offset="100%" stop-color="#005a9c"></stop>
+               </radialGradient>
+               <circle id="ball" cx="238" cy="200" r="200" fill="url(#radial)" stroke="#005a9c"></circle>
+            </svg>
+        </textarea><br>
+        array of ids:<br>
+        <input id=array_of_ids style=width:90% value='ball ball ball ball'><br>
+        <button id=render>Render!</button><br>
+        <canvas id=canvas width=1000 height=600 style='border:1px solid #ccc'></canvas>
+    </body>
+</html>
