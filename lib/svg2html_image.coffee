@@ -317,6 +317,8 @@ svg2html_image = (svg, id_list, cb) ->
                     out = ( null for x in id_list )
                     cb(out)
             )
+    else
+        build_images(svg, id_list, cb)
 
 if window.require? and window.define?
     define([], () -> svg2html_image)
