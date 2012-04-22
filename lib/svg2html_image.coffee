@@ -1,6 +1,6 @@
 ###
 
-SVG To HTML Image Library v0.01
+SVG To HTML Image Library v0.03
 https://github.com/CindyLinz/Coffee-svg2html_img
 
 Copyright 2012, Cindy Wang (CindyLinz)
