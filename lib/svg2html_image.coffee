@@ -1,10 +1,12 @@
 ###
 
-SVG To HTML Image Library v0.03
+SVG To HTML Image Library v0.04
 https://github.com/CindyLinz/Coffee-svg2html_img
 
 Copyright 2012, Cindy Wang (CindyLinz)
 Dual licensed under the MIT or GPL Version 2 licenses.
+
+Date: 2012.4.24
 
 ###
 
@@ -258,7 +260,7 @@ build_images = (svg, id_list, cb) ->
                     if imgs[0]?
                         cb(imgs[0]...)
                     else
-                        cb(null, null)
+                        cb(null, null, null)
                 else
                     cb(imgs)
             , 0)
@@ -266,13 +268,15 @@ build_images = (svg, id_list, cb) ->
     waiting = id_list.length
     imgs =
     for id in id_list
-        img_and_bbox = build_image extract_svg id
+        extrated_svg = extract_svg id
+        img_and_bbox = build_image extrated_svg
         if img_and_bbox?
             [img, bbox] = img_and_bbox
             img.onload = done_one
+            [img, bbox, extrated_svg]
         else
             done_one()
-        img_and_bbox
+            null
 
 svg2html_image = (svg, id_list, cb) ->
     unless cb?

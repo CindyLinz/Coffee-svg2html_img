@@ -3,6 +3,11 @@ Name
 
 svg2html\_image - SVG To HTML Image
 
+Version
+=======
+
+0\.04
+
 Synopsis
 ========
 
@@ -34,7 +39,7 @@ There's only one exported method **svg2html_image** with two form.
         "<svg ...>" or
         "<?xml ...><svg ...>" or
         SVG_XML_object,
-        function(image, bbox){
+        function(image, bbox, svg){
 
             // Put the image to the left top corner (by reset the position of the bounding box)
             context.drawImage(image, -bbox.x, -bbox.y);
@@ -48,11 +53,12 @@ There's only one exported method **svg2html_image** with two form.
     svg2html_image(
         same_as_the_first_argument_as_form_1,
         [component_id_1, component_id_2, ...],
-        function(array_of_image_and_bbox){
-            var i, image, bbox;
-            for(i=0; i<array_of_image_and_bbox.length; ++i){
-                image = array_of_image_and_bbox[i][0];
-                bbox = array_of_image_and_bbox[i][1];
+        function(array_of_image_and_bbox_and_svg){
+            var i, image, bbox, svg;
+            for(i=0; i<array_of_image_and_bbox_and_svg.length; ++i){
+                image = array_of_image_and_bbox_and_svg[i][0];
+                bbox = array_of_image_and_bbox_and_svg[i][1];
+                svg = array_of_image_and_bbox_and_svg[i][2];
 
                 // Act the same as form 1
             }
@@ -88,7 +94,7 @@ You can either:
 Detailed API
 ============
 
-svg2html\_image(svg, callback(image, bbox))
+svg2html\_image(svg, callback(image, bbox, extracted\_svg))
 -------------------------------------------
 
   Transform the whole SVG file into an HTML Image object with its bounding box.
@@ -116,13 +122,16 @@ svg2html\_image(svg, callback(image, bbox))
     which assigned inheritable attributes. You should use the second form of
     the method for this situation.
 
-  - callback(image, bbox):
+  - callback(image, bbox, extracted\_svg):
 
     When the image is created, the callback you provided will be called.
     the **image** is the Image object, and the **bbox** is an SVGRect object
     that point out the bounding box of the content elements.
 
-svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
+    The additional **extrated\_svg** is a cloned SVG DOM element of the original SVG,
+    you can insert this one into the HTML document directly if you need.
+
+svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes\_and\_svg))
 ------------------------------------------------------------------------------
 
   The difference with the first form are the **array\_of\_ids** and the parameter for the **callback**.
@@ -137,9 +146,17 @@ svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes))
     Each element of **array\_of\_ids** is a string of the id value of an SVG element.
     If you use empty string as the id value, then this one will pick the whole SVG.
 
-  - array\_of\_images\_and\_bboxes:
+  - array\_of\_images\_and\_bboxes\_and\_svg:
 
     For each element in the **array\_of\_ids**, there will be an element in this array.
-    Each of the result element is an array of two elements: **image** and **bbox**.
-    The **image** and **bbox** is the same as in the first form.
+    Each of the result element is an array of 3 elements: **image**, **bbox** and **svg**.
+    They are the same as in the first form.
+
+License
+=======
+
+Copyright 2012, Cindy Wang (CindyLinz)  
+Dual licensed under the MIT or GPL Version 2 licenses.
+
+Date: 2012.4.24
 
