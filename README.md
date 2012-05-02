@@ -6,7 +6,7 @@ svg2html\_image - SVG To HTML Image
 Version
 =======
 
-0\.05
+0\.06
 
 Synopsis
 ========
@@ -162,6 +162,9 @@ svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes\_an
     + 'a -b c' // This image is consist of the two elements a and c, but exclude the b element if a or c contains it.
     + '' // This image is the whole SVG image.
     + '-a -b' // This image is the whole SVG image but the a and b elements.
+
+    By the way, each id, positive or negative, could optionally has an astroid (*) at the end
+    (introduced in version 0.06). This usage means to match any element that has this name as the prefix.
 
   - array\_of\_images\_and\_bboxes\_and\_svg:
 

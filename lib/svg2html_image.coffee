@@ -1,6 +1,6 @@
 ###
 
-SVG To HTML Image Library v0.05
+SVG To HTML Image Library v0.06
 https://github.com/CindyLinz/Coffee-svg2html_img
 
 Copyright 2012, Cindy Wang (CindyLinz)
@@ -193,13 +193,22 @@ build_images = (svg, id_list, cb) ->
     extract_svg = (id_series) ->
         positive_nodes = []
         negative_ids = {}
+        negative_prefixes = []
         for id in id_series.split(/\s+/)
             if id==''
                 continue
             if id.charAt(0) == '-'
-                negative_ids[id.substr(1)] = yes
+                if id.charAt(id.length-1) == '*'
+                    negative_prefixes.push(id.substr(1, id.length-2))
+                else
+                    negative_ids[id.substr(1)] = yes
             else
-                if node = id2node[id]
+                if id.charAt(id.length-1) == '*'
+                    prefix = id.substr(0, id.length-1)
+                    for node_id, node of id2node
+                        if node_id.substr(0, prefix.length) == prefix
+                            positive_nodes.push(node)
+                else if node = id2node[id]
                     positive_nodes.push(node)
         if positive_nodes.length==0
             positive_nodes.push svg
@@ -238,8 +247,15 @@ build_images = (svg, id_list, cb) ->
                     cloned_child = do_clone(child, depth+1, get_all)
                     return cloned_child if cloned_child
 
-            if node.nodeType!=1 || negative_ids[node.getAttribute('id')]
+            if node.nodeType!=1
                 return
+
+            if id = node.getAttribute('id')
+                if negative_ids[id]
+                    return
+                for neg_id in negative_prefixes
+                    if id.substr(0, neg_id.length) == neg_id
+                        return
 
             cloned_node = window.document.createElementNS(node.namespaceURI, node.nodeName)
             for attr in node.attributes
