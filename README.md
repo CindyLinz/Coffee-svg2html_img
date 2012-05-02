@@ -6,7 +6,7 @@ svg2html\_image - SVG To HTML Image
 Version
 =======
 
-0\.04
+0\.05
 
 Synopsis
 ========
@@ -146,6 +146,23 @@ svg2html\_image(svg, array\_of\_ids, callback(array\_of\_images\_and\_bboxes\_an
     Each element of **array\_of\_ids** is a string of the id value of an SVG element.
     If you use empty string as the id value, then this one will pick the whole SVG.
 
+  - id syntax:
+
+    The basic usage of **id** is just the id of the selected node.
+
+    The extented usage (introduced in version 0.05) of **id** is to select
+    a set of nodes which is consist of a series of positive ids and negative ids seperated by spaces.
+    The negative ids is preceded by a minus sign (-).
+    Then this library will create a image that consist of all the positive elements
+    and exclude the negative ones.
+    If there is no positive id at all, then the whole SVG is counted as the only positive element.
+
+    For example:
+    + 'a b c' // This image is consist of the three elements a, b, and c.
+    + 'a -b c' // This image is consist of the two elements a and c, but exclude the b element if a or c contains it.
+    + '' // This image is the whole SVG image.
+    + '-a -b' // This image is the whole SVG image but the a and b elements.
+
   - array\_of\_images\_and\_bboxes\_and\_svg:
 
     For each element in the **array\_of\_ids**, there will be an element in this array.
@@ -158,5 +175,5 @@ License
 Copyright 2012, Cindy Wang (CindyLinz)  
 Dual licensed under the MIT or GPL Version 2 licenses.
 
-Date: 2012.4.24
+Date: 2012.5.2
 

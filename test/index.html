@@ -29,6 +29,7 @@
                         replace(/[\s,]+/g, ' ').
                         replace(/^\s+|\s+$/g, '').
                         split(' ');
+                    var extended_id = document.getElementById('extended_id').value;
                     var canvas = document.getElementById('canvas');
                     if( array_of_ids && array_of_ids.length )
                         svg2html_image(svg, array_of_ids, function(array_of_images_and_bboxes){
@@ -62,6 +63,13 @@
                                 body.appendChild(svg);
                             }
                         });
+                    svg2html_image(svg, [extended_id], function(array_of_extended_images_and_bboxes){
+                        canvas.getContext('2d').drawImage(
+                            array_of_extended_images_and_bboxes[0][0],
+                            -array_of_extended_images_and_bboxes[0][1].x,
+                            -array_of_extended_images_and_bboxes[0][1].y
+                        );
+                    });
                 };
                 document.getElementById('render').focus();
             };
@@ -80,10 +88,17 @@
                  <stop offset="100%" stop-color="#005a9c"></stop>
                </radialGradient>
                <circle id="ball" cx="238" cy="200" r="200" fill="url(#radial)" stroke="#005a9c"></circle>
+               <g id="group">
+                 <circle id="g1" cx="10" cy="10" r="10" fill="#ffff00" />
+                 <circle id="g2" cx="40" cy="10" r="10" fill="#00ff00" />
+                 <circle id="g3" cx="10" cy="40" r="10" fill="#0000ff" />
+               </g>
             </svg>
         </textarea><br>
         array of ids:<br>
         <input id=array_of_ids style=width:90% value='ball ball ball'><br>
+        extended_id:<br>
+        <input id=extended_id style=width:90% value='group -g1'><br>
         <button id=render>Render!</button><br>
         <canvas id=canvas width=1000 height=600 style='border:1px solid #ccc'></canvas>
     </body>
