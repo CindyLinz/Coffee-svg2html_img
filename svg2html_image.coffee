@@ -1,10 +1,12 @@
 ###
 
-SVG To HTML Image Library v0.01
+SVG To HTML Image Library v0.05
 https://github.com/CindyLinz/Coffee-svg2html_img
 
 Copyright 2012, Cindy Wang (CindyLinz)
 Dual licensed under the MIT or GPL Version 2 licenses.
+
+Date: 2012.5.2
 
 ###
 
@@ -188,17 +190,24 @@ build_images = (svg, id_list, cb) ->
 
         return dep_node
 
-    extract_svg = (id) ->
-        node =
-        if id == ''
-            svg
-        else
-            id2node[id]
+    extract_svg = (id_series) ->
+        positive_nodes = []
+        negative_ids = {}
+        for id in id_series.split(/\s+/)
+            if id==''
+                continue
+            if id.charAt(0) == '-'
+                negative_ids[id.substr(1)] = yes
+            else
+                if node = id2node[id]
+                    positive_nodes.push(node)
+        if positive_nodes.length==0
+            positive_nodes.push svg
 
-        return node unless node?
-
-        deps = find_dep(node, {})
-        seeds = [node]
+        deps = {}
+        for node in positive_nodes
+            find_dep(node, deps)
+        seeds = ( node for node in positive_nodes )
         for dep_id, dep_node of deps
             seeds.push(dep_node)
 
@@ -223,11 +232,13 @@ build_images = (svg, id_list, cb) ->
 
             if node.nodeType==3 || node.nodeType==4
                 return window.document.createTextNode(node.nodeValue)
+
             if node.nodeType==9 || node.nodeType==11
                 for child in node.childNodes
                     cloned_child = do_clone(child, depth+1, get_all)
                     return cloned_child if cloned_child
-            if node.nodeType!=1
+
+            if node.nodeType!=1 || negative_ids[node.getAttribute('id')]
                 return
 
             cloned_node = window.document.createElementNS(node.namespaceURI, node.nodeName)
@@ -258,7 +269,7 @@ build_images = (svg, id_list, cb) ->
                     if imgs[0]?
                         cb(imgs[0]...)
                     else
-                        cb(null, null)
+                        cb(null, null, null)
                 else
                     cb(imgs)
             , 0)
@@ -266,15 +277,17 @@ build_images = (svg, id_list, cb) ->
     waiting = id_list.length
     imgs =
     for id in id_list
-        img_and_bbox = build_image extract_svg id
+        extrated_svg = extract_svg id
+        img_and_bbox = build_image extrated_svg
         if img_and_bbox?
             [img, bbox] = img_and_bbox
             img.onload = done_one
+            [img, bbox, extrated_svg]
         else
             done_one()
-        img_and_bbox
+            null
 
-window.svg2html_image = (svg, id_list, cb) ->
+svg2html_image = (svg, id_list, cb) ->
     unless cb?
         cb = id_list
         id_list = undefined
@@ -317,3 +330,10 @@ window.svg2html_image = (svg, id_list, cb) ->
                     out = ( null for x in id_list )
                     cb(out)
             )
+    else
+        build_images(svg, id_list, cb)
+
+if window.require? and window.define?
+    define([], () -> svg2html_image)
+else
+    window.svg2html_image = svg2html_image
